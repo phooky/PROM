@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Wed Aug  8 09:44:45 2012
+# Created: Mon Aug 13 18:16:52 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,6 +28,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.label_2 = QtGui.QLabel(self.centralwidget)
+        self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.horizontalLayout.addWidget(self.label_2)
         self.bitDepthComboBox = QtGui.QComboBox(self.centralwidget)
@@ -39,7 +40,16 @@ class Ui_MainWindow(object):
         self.bitDepthComboBox.addItem(_fromUtf8(""))
         self.bitDepthComboBox.addItem(_fromUtf8(""))
         self.horizontalLayout.addWidget(self.bitDepthComboBox)
+        self.endianCheckBox = QtGui.QCheckBox(self.centralwidget)
+        self.endianCheckBox.setObjectName(_fromUtf8("endianCheckBox"))
+        self.horizontalLayout.addWidget(self.endianCheckBox)
+        self.wrapCheckBox = QtGui.QCheckBox(self.centralwidget)
+        self.wrapCheckBox.setChecked(True)
+        self.wrapCheckBox.setTristate(False)
+        self.wrapCheckBox.setObjectName(_fromUtf8("wrapCheckBox"))
+        self.horizontalLayout.addWidget(self.wrapCheckBox)
         self.label = QtGui.QLabel(self.centralwidget)
+        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label.setObjectName(_fromUtf8("label"))
         self.horizontalLayout.addWidget(self.label)
         self.rowStrideBox = QtGui.QSpinBox(self.centralwidget)
@@ -47,6 +57,9 @@ class Ui_MainWindow(object):
         self.rowStrideBox.setMaximum(2096)
         self.rowStrideBox.setObjectName(_fromUtf8("rowStrideBox"))
         self.horizontalLayout.addWidget(self.rowStrideBox)
+        self.saveButton = QtGui.QPushButton(self.centralwidget)
+        self.saveButton.setObjectName(_fromUtf8("saveButton"))
+        self.horizontalLayout.addWidget(self.saveButton)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
@@ -69,5 +82,8 @@ class Ui_MainWindow(object):
         self.bitDepthComboBox.setItemText(3, QtGui.QApplication.translate("MainWindow", "8", None, QtGui.QApplication.UnicodeUTF8))
         self.bitDepthComboBox.setItemText(4, QtGui.QApplication.translate("MainWindow", "16", None, QtGui.QApplication.UnicodeUTF8))
         self.bitDepthComboBox.setItemText(5, QtGui.QApplication.translate("MainWindow", "24", None, QtGui.QApplication.UnicodeUTF8))
+        self.endianCheckBox.setText(QtGui.QApplication.translate("MainWindow", "Little-endian", None, QtGui.QApplication.UnicodeUTF8))
+        self.wrapCheckBox.setText(QtGui.QApplication.translate("MainWindow", "Wrap image", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("MainWindow", "Row Stride (bytes)", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveButton.setText(QtGui.QApplication.translate("MainWindow", "Save Image...", None, QtGui.QApplication.UnicodeUTF8))
 

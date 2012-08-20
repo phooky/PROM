@@ -25,6 +25,9 @@
         <property name="text">
          <string>Bit Depth</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item>
@@ -62,9 +65,32 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="endianCheckBox">
+        <property name="text">
+         <string>Little-endian</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="wrapCheckBox">
+        <property name="text">
+         <string>Wrap image</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Row Stride (bytes)</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -75,6 +101,13 @@
         </property>
         <property name="maximum">
          <number>2096</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="saveButton">
+        <property name="text">
+         <string>Save Image...</string>
         </property>
        </widget>
       </item>

@@ -21,6 +21,7 @@ class BinMapper(QtGui.QGraphicsItem):
 		self.depth = 1
 		self.stride = 1
 		self.bigendian = 1
+		self.maxDim = 600
 		self.rebuildImage()
 
 	def rebuildImage(self):
@@ -28,24 +29,31 @@ class BinMapper(QtGui.QGraphicsItem):
 		height = int(math.ceil(self.size / float(self.stride)))
 		self.img = QtGui.QImage(width,height,QtGui.QImage.Format_Mono)
 		byteidx = 0
-		try:
-			for y in range(height):
-				line = self.img.scanLine(y)
-				line.setsize(self.stride)
+		for y in range(height):
+			line = self.img.scanLine(y)
+			line.setsize(self.stride)
+			try:
 				for x in range(self.stride):
 					line[x] = self.data[byteidx]
 					byteidx = byteidx + 1
-		except IndexError:
-			# zero out the rest of the image
-			pass
+			except IndexError:
+				# zero out the rest of the scan line
+				buf = "\x00"
+				for x in range(x,self.stride):
+					line[x] = buf[0]
+		self.width = width
+		self.height = height
+		self.xstrips = 1
+		if self.height > self.maxDim:
+			self.xstrips = (self.height + self.maxDim - 1)/self.maxDim
 
 	def paint(self, qpainter, qoptions, widget=None):
-		qpainter.drawImage(0,0,self.img)
+		vh = min(self.height,self.maxDim)
+		for strip in range(self.xstrips):
+			qpainter.drawImage(strip*self.width,0,self.img,0,vh*strip,self.width,vh)
 
 	def boundingRect(self):
-		width = self.stride * (8 / self.depth)
-		height = int(math.ceil(self.size / float(self.stride)))
-		return QtCore.QRectF(0,0,width, height)
+		return QtCore.QRectF(0,0, self.width * self.xstrips, min(self.height,self.maxDim))
 
 
 class MainWindow(QtGui.QMainWindow):
