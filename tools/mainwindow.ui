@@ -16,7 +16,11 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QGraphicsView" name="bitmapView"/>
+     <widget class="QGraphicsView" name="bitmapView">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">

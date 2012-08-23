@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Mon Aug 13 18:16:52 2012
+# Created: Thu Aug 23 01:07:24 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,6 +23,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.centralwidget)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.bitmapView = QtGui.QGraphicsView(self.centralwidget)
+        self.bitmapView.setMouseTracking(True)
         self.bitmapView.setObjectName(_fromUtf8("bitmapView"))
         self.verticalLayout_2.addWidget(self.bitmapView)
         self.horizontalLayout = QtGui.QHBoxLayout()

@@ -22,7 +22,10 @@ class BinMapper(QtGui.QGraphicsItem):
 		self.stride = 1
 		self.bigendian = 1
 		self.maxDim = 600
+		self.setAcceptHoverEvents(True)
 		self.rebuildImage()
+		# Create a wrapped object for emitting events
+		self.qobject = QtCore.QObject()
 
 	def rebuildImage(self):
 		width = self.stride * (8 / self.depth)
@@ -52,6 +55,17 @@ class BinMapper(QtGui.QGraphicsItem):
 		for strip in range(self.xstrips):
 			qpainter.drawImage(strip*self.width,0,self.img,0,vh*strip,self.width,vh)
 
+	def hoverMoveEvent(self,event):
+		strip = int(event.pos().x() / self.width)
+		actualh = min(self.height, self.maxDim)
+		stripoff = strip*self.width*actualh*self.depth
+		yoff = self.width*int(event.pos().y())*self.depth
+		xoff = int(event.pos().x() - strip*self.width)*self.depth
+		totalbitoff = int(xoff+yoff+stripoff)
+		offset = totalbitoff / 8
+		bit = totalbitoff % 8
+		self.qobject.emit(QtCore.SIGNAL("mouseOverLocation"),offset,bit)
+
 	def boundingRect(self):
 		return QtCore.QRectF(0,0, self.width * self.xstrips, min(self.height,self.maxDim))
 
@@ -62,6 +76,9 @@ class MainWindow(QtGui.QMainWindow):
 		self.ui = mainwindow.Ui_MainWindow()
 		self.ui.setupUi(self)
 
+	def updateWithLocation(self,offset,bit):
+		self.ui.statusbar.showMessage('Binary {0} loaded; total size {1} [Offset 0x{2:X} bit {3}]'.format(self.bin.name, self.bin.size, offset, bit))
+
 	def setBinary(self,bin):
 		self.bin = bin
 		self.bin.depth = int(self.ui.bitDepthComboBox.currentText())
@@ -71,6 +88,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.scene.addItem(bin)
 		self.ui.bitmapView.setScene(self.scene)
 		self.ui.bitmapView.mapToScene(0,0)
+		QtCore.QObject.connect(self.bin.qobject,QtCore.SIGNAL("mouseOverLocation"),self.updateWithLocation)
 
 	def updateScene(self):
 		self.bin.rebuildImage()
