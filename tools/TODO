@@ -1,0 +1,20 @@
+TODO
+
+Bitmap reslicer-- interactive?
+Use PyQt4 to create frontend
+Dynamically cycle through slices and offsets
+Use PIL to generate snapshots
+
+Find/create Teensy/Teensy plus footprint for Eagle
+
+Revise shield board and ship out Gerbers to Advanced Circuits
+NB: Do not convert to teensy! We need to keep the optoisolation on the RX/TX lines.
+(Actually, doable with Teensy as well... bypass the USB i/o)
+YOU KNOW WHAT? FUCK IT. Go with a Teensy/Teensy Pro! We no longer need the metric fuckton of I/O and they're smaller and more stable.
+Create BOM for shield board
+Put together digikey/mouser order for shield board
+
+Source parts for high end of nixie driver
+Order high end driver parts
+
+Hack together a quick implementation of the driver circuit for the Waters 600E monitor
