@@ -36,13 +36,14 @@ class BinMapper(QtGui.QGraphicsItem):
 			line = self.img.scanLine(y)
 			line.setsize(self.stride)
 			try:
-				for x in range(self.stride):
-					line[x] = self.data[byteidx]
-					byteidx = byteidx + 1
-			except IndexError:
+				line[0:self.stride] = self.data[byteidx:byteidx+self.stride]
+				byteidx = byteidx + self.stride
+			except ValueError:
 				# zero out the rest of the scan line
+				remainder = len(self.data)-byteidx
+				line[0:remainder] = self.data[byteidx:]
 				buf = "\x00"
-				for x in range(x,self.stride):
+				for x in range(remainder,self.stride):
 					line[x] = buf[0]
 		self.width = width
 		self.height = height
