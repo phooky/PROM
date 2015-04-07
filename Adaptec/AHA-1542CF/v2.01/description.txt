@@ -1,0 +1,4 @@
+Adaptec AHA1542CF SCSI controller
+
+U16 is the BIOS, U15 is the microcode
+
