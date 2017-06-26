@@ -1,0 +1,17 @@
+Dumped from an Am29F040.
+
+system specs:
+- PowerPC 604e(? not sure since I didn't remove the heatsink, it's supposed to be a 200 MHz CPU)
+- PCI Cirrus Logic CL-GD5446-HC-A video card without BIOS
+- Symbios Logic 53C825A SCSI
+- DEC 21140-AF network chip, DP83840 PHY
+- Winbond W83C553F-G chipset
+- M4T2B-BR12SH1 RTC
+- Crystal CS4236 audio
+- PC87308-IBN/VUL SuperIO
+- 3xISA + 3xPCI, both on a riser card
+Other chips (memory controller?):
+- 94G0178/IBM98 PQ/19625A5797/JAPAN
+- 20H2842/IBM 98/19651E2923/JAPAN
+
+
