@@ -5,6 +5,7 @@
 
 import sys
 import os.path
+import struct
 
 def readc(f):
     t = ['']
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     inf = open(path,"r")
     maxw = 0
     maxh = 0
-    charmap = {}
+    chars = []
     count = 0
     while True:
         t = inf.readline().split()
@@ -45,10 +46,26 @@ if __name__ == '__main__':
         (id, data, width, height) = readc(inf)
         maxw = max(maxw, width)
         maxh = max(maxh, height)
-        charmap[id] = data
+        chars.append((id,data))
         
     print("W:{} H:{} COUNT:{}".format(maxw, maxh, count))
-    print(charmap[ord('A')])
-    print(charmap[ord('a')])
+
+    outf = open(outpath,"wb")
+
+    outf.write('tinyfont')
+    outf.write(struct.pack('<IIII',0,count,maxh,maxw))
+    for (id,_) in chars:
+        outf.write(struct.pack('<I',id))
+    for (_,data) in chars:
+        d = ''
+        for row in data:
+            for i in range(maxw):
+                if ( (1<<i) & row ):
+                    d = d + '\xff'
+                else:
+                    d = d + '\x00'
+        outf.write(d)
+    outf.close()
+    
         
         
