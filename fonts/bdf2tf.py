@@ -60,7 +60,7 @@ if __name__ == '__main__':
         d = ''
         for row in data:
             for i in range(maxw):
-                if ( (1<<i) & row ):
+                if ( (1<< ((maxw-1)-i) ) & row ):
                     d = d + '\xff'
                 else:
                     d = d + '\x00'
