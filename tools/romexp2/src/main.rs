@@ -1,10 +1,13 @@
 extern crate gtk;
 extern crate clap;
+extern crate memmap;
 
 use clap::{Arg,App};
 
 use gtk::prelude::*;
 use gtk::{Button, Window, WindowType};
+
+use memmap::{Mmap, Protection};
 
 fn main() {
     let matches = App::new("ROM image explorer")
@@ -15,6 +18,14 @@ fn main() {
             .help("ROM file to analyze")
             .required(true))
         .get_matches();
+
+    let rom_path = matches.value_of("ROM").unwrap();
+    let rom = match Mmap::open_path(rom_path,Protection::Read) {
+        Ok(r) => r,
+        Err(e) => { println!("Could not open {}: {}",rom_path,e); return; },
+    };
+    
+    println!("Opened {}; size {} bytes",rom_path,rom.len());
 
     if gtk::init().is_err() {
         println!("Failed to initialize GTK.");
