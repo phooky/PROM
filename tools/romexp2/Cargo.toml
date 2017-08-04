@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Adam Mayer <phooky@gmail.com>"]
 
 [dependencies]
+clap = "2.26.0"
 
 [dependencies.gtk]
 version = "0.1.3"
