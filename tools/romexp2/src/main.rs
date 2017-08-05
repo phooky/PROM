@@ -1,13 +1,13 @@
-extern crate gtk;
 extern crate clap;
 extern crate memmap;
+extern crate glfw;
+extern crate gl;
 
 use clap::{Arg,App};
 
-use gtk::prelude::*;
-use gtk::{Button, GLArea, Window, Box, WindowType};
-
 use memmap::{Mmap, Protection};
+
+use glfw::{Action, Context, Key};
 
 fn main() {
     let matches = App::new("ROM image explorer")
@@ -27,37 +27,26 @@ fn main() {
     
     println!("Opened {}; size {} bytes",rom_path,rom.len());
 
-    if gtk::init().is_err() {
-        println!("Failed to initialize GTK.");
-        return;
+    let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
+    let (mut window, events) = glfw.create_window(300,300,"ROM explorer", glfw::WindowMode::Windowed)
+        .expect("Failed to create GLFW window.");
+    window.set_key_polling(true);
+    window.make_current();
+    gl::load_with(|name| window.get_proc_address(name) as *const _);
+    while !window.should_close() {
+        unsafe { gl::ClearColor(1.0,0.0,0.0,1.0) };
+        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
+        window.swap_buffers();
+        glfw.poll_events();
+        for (_, event) in glfw::flush_messages(&events) {
+            println!("EVT: {:?}", event);
+            match event {
+                glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
+                    window.set_should_close(true)
+                },
+                _ => {},
+            }
+        }
     }
 
-    let window = Window::new(WindowType::Toplevel);
-    window.set_title("First GTK+ Program");
-    window.set_default_size(350, 70);
-    let gbox = Box::new(gtk::Orientation::Vertical, 2);
-    let area = GLArea::new();
-    area.set_size_request(350,200);
-    gbox.add(&area);
-    let button = Button::new_with_label("Click me!");
-    gbox.add(&button);
-    window.add(&gbox);
-    window.show_all();
-
-    area.connect_render(|_, context| {
-        println!("Render");
-        Inhibit(false)
-    });
-
-    window.connect_delete_event(|_, _| {
-        gtk::main_quit();
-        Inhibit(false)
-    });
-
-    button.connect_clicked(|_| {
-        println!("Clicked!");
-    });
-
-    gtk::main();
-    println!("Hello, world!");
 }
