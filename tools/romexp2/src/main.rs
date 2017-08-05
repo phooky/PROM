@@ -5,7 +5,7 @@ extern crate memmap;
 use clap::{Arg,App};
 
 use gtk::prelude::*;
-use gtk::{Button, Window, WindowType};
+use gtk::{Button, GLArea, Window, Box, WindowType};
 
 use memmap::{Mmap, Protection};
 
@@ -35,9 +35,19 @@ fn main() {
     let window = Window::new(WindowType::Toplevel);
     window.set_title("First GTK+ Program");
     window.set_default_size(350, 70);
+    let gbox = Box::new(gtk::Orientation::Vertical, 2);
+    let area = GLArea::new();
+    area.set_size_request(350,200);
+    gbox.add(&area);
     let button = Button::new_with_label("Click me!");
-    window.add(&button);
+    gbox.add(&button);
+    window.add(&gbox);
     window.show_all();
+
+    area.connect_render(|_, context| {
+        println!("Render");
+        Inhibit(false)
+    });
 
     window.connect_delete_event(|_, _| {
         gtk::main_quit();

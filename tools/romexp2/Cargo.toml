@@ -6,8 +6,9 @@ authors = ["Adam Mayer <phooky@gmail.com>"]
 [dependencies]
 clap = "2.26.0"
 memmap = "0.5.2"
+gl = "0.6.3"
 
 [dependencies.gtk]
 version = "0.1.3"
-features = ["v3_10"]
+features = ["v3_16"]
 
