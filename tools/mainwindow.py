@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.label)
         self.rowStrideBox = QtGui.QSpinBox(self.centralwidget)
         self.rowStrideBox.setMinimum(1)
-        self.rowStrideBox.setMaximum(2096)
+        self.rowStrideBox.setMaximum(10000)
         self.rowStrideBox.setObjectName(_fromUtf8("rowStrideBox"))
         self.horizontalLayout.addWidget(self.rowStrideBox)
         self.saveButton = QtGui.QPushButton(self.centralwidget)
