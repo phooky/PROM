@@ -30,10 +30,16 @@ static VS_SRC: &'static str = "#version 130\n\
 
 static FS_SRC: &'static str = "#version 130\n\
     out vec4 out_color;\n\
-    uniform float ww;\n\
-    uniform float wh;\n\
+    uniform uint ww;\n\
+    uniform uint wh;\n\
+    uniform uint rom[{}];\n\
     void main() {\n\
-       out_color = vec4(gl_FragCoord[0]/ww, gl_FragCoord[1]/wh, 0.2, 1.0);\n\
+       uint bitidx = uint(gl_FragCoord[0]) + uint(gl_FragCoord[1]) * ww;\n\
+       uint word_off = (bitidx / 32u) % uint({});\n
+       uint bit_off = bitidx % 32u;\n
+       uint rv = (rom[word_off] >> (31u-bit_off)) & 1u;\n\
+       //out_color = vec4(gl_FragCoord[0]/ww, gl_FragCoord[1]/wh, float(rv%uint(256))/256.0, 1.0);\n\
+       out_color = vec4(float(rv)/1.0,float(rv)/1.0,float(rv)/1.0, 1.0);\n\
     }";
 
 fn compile_shader(src: &str, ty: GLenum) -> GLuint {
@@ -114,7 +120,7 @@ fn main() {
     };
     
     println!("Opened {}; size {} bytes",rom_path,rom.len());
-
+    unsafe{println!("First byte: {:x}",rom.as_slice()[1]);};
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
     let (mut window, events) = glfw.create_window(300,300,"ROM explorer", glfw::WindowMode::Windowed)
         .expect("Failed to create GLFW window.");
@@ -124,11 +130,12 @@ fn main() {
 
     // Create GLSL shaders
     let vs = compile_shader(VS_SRC, gl::VERTEX_SHADER);
-    let fs = compile_shader(FS_SRC, gl::FRAGMENT_SHADER);
+    let fsstr = String::from(FS_SRC).replace("{}",(rom.len()/4).to_string().as_str());
+    println!("{}",fsstr);
+    let fs = compile_shader(fsstr.as_str(), gl::FRAGMENT_SHADER);
     let program = link_program(vs, fs);
 
     let mut vao = 0; let mut vbo = 0;
-    let mut texo = 0;
     unsafe {
         // Create Vertex Array Object
         gl::GenVertexArrays(1, &mut vao);
@@ -144,14 +151,8 @@ fn main() {
         // Use shader program
         gl::UseProgram(program);
         gl::BindFragDataLocation(program, 0, CString::new("out_color").unwrap().as_ptr());
-        gl::Uniform1f(gl::GetUniformLocation(program,CString::new("ww").unwrap().as_ptr()),300.0);
-        gl::Uniform1f(gl::GetUniformLocation(program,CString::new("wh").unwrap().as_ptr()),300.0);
-        // Load image as texture
-        gl::GenTextures(1, &mut texo);
-        gl::BindTexture(gl::TEXTURE_1D, texo);
-        gl::TexImage1D(gl::TEXTURE_1D, 0, gl::R8 as i32, rom.len() as GLsizei, 0,
-                       gl::RED, gl::UNSIGNED_BYTE, rom.ptr() as *const GLvoid);
-        println!("Texture bound at {}",texo);
+        gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("ww").unwrap().as_ptr()),300);
+        gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("wh").unwrap().as_ptr()),300);
         // Specify the layout of the vertex data
         let pos_attr = gl::GetAttribLocation(program, CString::new("position").unwrap().as_ptr());
         gl::EnableVertexAttribArray(pos_attr as GLuint);
@@ -161,6 +162,11 @@ fn main() {
                                 gl::FALSE as GLboolean,
                                 0,
                                 ptr::null());
+
+
+        let texloc = gl::GetUniformLocation(program,CString::new("rom").unwrap().as_ptr());
+        gl::Uniform1uiv(texloc,(rom.len()/4) as i32,rom.ptr() as *const GLuint);
+
     }
     while !window.should_close() {
         unsafe { gl::ClearColor(1.0,0.0,0.0,1.0) };
