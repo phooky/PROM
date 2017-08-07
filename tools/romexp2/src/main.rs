@@ -22,25 +22,9 @@ static VERTEX_DATA: [GLfloat; 12] = [
 ];
 
 // Shader sources
-static VS_SRC: &'static str = "#version 130\n\
-    in vec2 position;\n\
-    void main() {\n\
-       gl_Position = vec4(position, 0.0, 1.0);\n\
-    }";
+static VS_SRC: &'static str = include_str!("vs.glsl");
 
-static FS_SRC: &'static str = "#version 130\n\
-    out vec4 out_color;\n\
-    uniform uint ww;\n\
-    uniform uint wh;\n\
-    uniform uint rom[{}];\n\
-    void main() {\n\
-       uint bitidx = uint(gl_FragCoord[0]) + uint(gl_FragCoord[1]) * ww;\n\
-       uint word_off = (bitidx / 32u) % uint({});\n
-       uint bit_off = bitidx % 32u;\n
-       uint rv = (rom[word_off] >> (31u-bit_off)) & 1u;\n\
-       //out_color = vec4(gl_FragCoord[0]/ww, gl_FragCoord[1]/wh, float(rv%uint(256))/256.0, 1.0);\n\
-       out_color = vec4(float(rv)/1.0,float(rv)/1.0,float(rv)/1.0, 1.0);\n\
-    }";
+static FS_SRC: &'static str = include_str!("fs.glsl");
 
 fn compile_shader(src: &str, ty: GLenum) -> GLuint {
     let shader;
@@ -122,7 +106,7 @@ fn main() {
     println!("Opened {}; size {} bytes",rom_path,rom.len());
     unsafe{println!("First byte: {:x}",rom.as_slice()[1]);};
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
-    let (mut window, events) = glfw.create_window(300,300,"ROM explorer", glfw::WindowMode::Windowed)
+    let (mut window, events) = glfw.create_window(512,512,"ROM explorer", glfw::WindowMode::Windowed)
         .expect("Failed to create GLFW window.");
     window.set_key_polling(true);
     window.make_current();
@@ -151,8 +135,8 @@ fn main() {
         // Use shader program
         gl::UseProgram(program);
         gl::BindFragDataLocation(program, 0, CString::new("out_color").unwrap().as_ptr());
-        gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("ww").unwrap().as_ptr()),300);
-        gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("wh").unwrap().as_ptr()),300);
+        gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("ww").unwrap().as_ptr()),512);
+        gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("wh").unwrap().as_ptr()),512);
         // Specify the layout of the vertex data
         let pos_attr = gl::GetAttribLocation(program, CString::new("position").unwrap().as_ptr());
         gl::EnableVertexAttribArray(pos_attr as GLuint);
