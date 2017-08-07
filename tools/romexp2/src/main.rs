@@ -16,7 +16,10 @@ use std::ffi::CString;
 
 // Test from rust gl example
 // Vertex data
-static VERTEX_DATA: [GLfloat; 6] = [0.0, 0.5, 0.5, -0.5, -0.5, -0.5];
+static VERTEX_DATA: [GLfloat; 12] = [
+    -1.0, 1.0, -1.0, -1.0, 1.0, -1.0,
+    -1.0, 1.0, 1.0, 1.0, 1.0, -1.0,
+];
 
 // Shader sources
 static VS_SRC: &'static str = "#version 130\n\
@@ -125,6 +128,7 @@ fn main() {
     let program = link_program(vs, fs);
 
     let mut vao = 0; let mut vbo = 0;
+    let mut texo = 0;
     unsafe {
         // Create Vertex Array Object
         gl::GenVertexArrays(1, &mut vao);
@@ -142,6 +146,12 @@ fn main() {
         gl::BindFragDataLocation(program, 0, CString::new("out_color").unwrap().as_ptr());
         gl::Uniform1f(gl::GetUniformLocation(program,CString::new("ww").unwrap().as_ptr()),300.0);
         gl::Uniform1f(gl::GetUniformLocation(program,CString::new("wh").unwrap().as_ptr()),300.0);
+        // Load image as texture
+        gl::GenTextures(1, &mut texo);
+        gl::BindTexture(gl::TEXTURE_1D, texo);
+        gl::TexImage1D(gl::TEXTURE_1D, 0, gl::R8 as i32, rom.len() as GLsizei, 0,
+                       gl::RED, gl::UNSIGNED_BYTE, rom.ptr() as *const GLvoid);
+        println!("Texture bound at {}",texo);
         // Specify the layout of the vertex data
         let pos_attr = gl::GetAttribLocation(program, CString::new("position").unwrap().as_ptr());
         gl::EnableVertexAttribArray(pos_attr as GLuint);
@@ -155,7 +165,7 @@ fn main() {
     while !window.should_close() {
         unsafe { gl::ClearColor(1.0,0.0,0.0,1.0) };
         unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
-        unsafe { gl::DrawArrays(gl::TRIANGLES, 0, 3) };
+        unsafe { gl::DrawArrays(gl::TRIANGLES, 0, 6) };
         window.swap_buffers();
         glfw.poll_events();
         for (_, event) in glfw::flush_messages(&events) {
