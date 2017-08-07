@@ -137,6 +137,7 @@ fn main() {
         gl::BindFragDataLocation(program, 0, CString::new("out_color").unwrap().as_ptr());
         gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("ww").unwrap().as_ptr()),512);
         gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("wh").unwrap().as_ptr()),512);
+        gl::Uniform1ui(gl::GetUniformLocation(program,CString::new("stride").unwrap().as_ptr()),8);
         // Specify the layout of the vertex data
         let pos_attr = gl::GetAttribLocation(program, CString::new("position").unwrap().as_ptr());
         gl::EnableVertexAttribArray(pos_attr as GLuint);
