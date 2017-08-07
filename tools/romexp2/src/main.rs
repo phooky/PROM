@@ -14,7 +14,7 @@ use std::ptr;
 use std::str;
 use std::ffi::CString;
 
-// Test from rust gl example
+
 // Vertex data
 static VERTEX_DATA: [GLfloat; 12] = [
     -1.0, 1.0, -1.0, -1.0, 1.0, -1.0,
