@@ -190,7 +190,8 @@ fn main() {
 
     let mut viz = Visualizer::new((512, 512), rom.len());
     viz.set_data(rom.ptr() as *const GLuint, rom.len());
-    viz.set_stride(8);
+    let mut stride = 8;
+    viz.set_stride(stride);
     
     while !viz.win.should_close() {
         unsafe { gl::ClearColor(1.0,0.0,0.0,1.0) };
@@ -201,6 +202,20 @@ fn main() {
         for (_, event) in glfw::flush_messages(&viz.events) {
             println!("EVT: {:?}", event);
             match event {
+                glfw::WindowEvent::Key(Key::Right, _, Action::Press, _) |
+                glfw::WindowEvent::Key(Key::Right, _, Action::Repeat, _) => {
+                    if stride < (rom.len() - 7) as u32 {
+                        stride = stride + 8;
+                        viz.set_stride(stride);
+                    }
+                },
+                glfw::WindowEvent::Key(Key::Left, _, Action::Press, _) |
+                glfw::WindowEvent::Key(Key::Left, _, Action::Repeat, _)=> {
+                    if stride > 8 {
+                        stride = stride - 8;
+                        viz.set_stride(stride);
+                    }
+                },
                 glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
                     viz.win.set_should_close(true)
                 },
