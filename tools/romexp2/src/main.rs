@@ -200,7 +200,6 @@ fn main() {
         viz.win.swap_buffers();
         viz.glfw.poll_events();
         for (_, event) in glfw::flush_messages(&viz.events) {
-            println!("EVT: {:?}", event);
             match event {
                 glfw::WindowEvent::Key(Key::Right, _, Action::Press, _) |
                 glfw::WindowEvent::Key(Key::Right, _, Action::Repeat, _) => {

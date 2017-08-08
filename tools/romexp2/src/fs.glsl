@@ -18,7 +18,11 @@ void main() {
      uint col = x / stride;
      uint bitidx = ((y  + (col*wh)) * stride) + (x % stride);
      
-     uint word_off = (bitidx / 32u) % uint({});
+     uint word_off = (bitidx / 32u);
+     if (word_off >= {}u) {
+     	out_color = vec4(0.0,0.0,0.8,1.0);
+     	return;
+	}	
      uint bit_off = bitidx % 32u;
      uint rv = 0u;
      bitfieldExtract(rom[word_off],31u-bit_off,rv);
