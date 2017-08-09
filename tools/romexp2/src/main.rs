@@ -92,6 +92,7 @@ struct Visualizer {
     win : glfw::Window,
     events : std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>,
     program : GLuint,
+    data : Vec<u8>,
 }
 
 impl Visualizer {
@@ -136,23 +137,30 @@ impl Visualizer {
                                     0,
                                     ptr::null());
         }
-        let vz = Visualizer { glfw : glfw, win : window, events: events, program : program };
+        let vz = Visualizer { glfw : glfw, win : window, events: events, program : program, data : Vec::new() };
         vz.set_size(size);
         vz
     }
 
-    fn set_data(&self, dat : *const GLuint, len : usize) {
+    fn set_data(&mut self, dat : &[u8]) {
         unsafe {
             // Load image as texture
             let mut texo = 0;
             gl::GenTextures(1, &mut texo);
-            gl::BindTexture(gl::TEXTURE_1D, texo);
-
-            gl::TexParameteri(gl::TEXTURE_1D, gl::TEXTURE_BASE_LEVEL, 0);
-            gl::TexParameteri(gl::TEXTURE_1D, gl::TEXTURE_MAX_LEVEL, 0);
-            gl::TexImage1D(gl::TEXTURE_1D, 0, gl::R8UI as i32, len as GLsizei, 0,
-                gl::RED_INTEGER, gl::UNSIGNED_BYTE, dat as *const GLvoid);
-            println!("Texture bound at {}, {}",texo, len);
+            gl::BindTexture(gl::TEXTURE_2D, texo);
+            let maxw : usize = 16384;
+            let tw : usize = maxw;
+            let th : usize = (dat.len() + (maxw-1))/maxw;
+            self.data.reserve(tw*th);
+            self.data.extend(dat.iter().cloned());
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_BASE_LEVEL, 0);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAX_LEVEL, 0);
+            gl::TexImage2D(gl::TEXTURE_2D, 0, gl::R8UI as i32, tw as GLsizei, th as GLsizei, 0,
+                gl::RED_INTEGER, gl::UNSIGNED_BYTE, self.data.as_ptr() as *const GLvoid);
+            println!("Texture bound at {}, {}",texo, dat.len());
+            gl::Uniform1ui(
+                gl::GetUniformLocation(self.program,CString::new("romh").unwrap().as_ptr()),
+                th as u32);
             gl::Uniform1i(
                 gl::GetUniformLocation(self.program,CString::new("romtex").unwrap().as_ptr()),
                 0);
@@ -201,7 +209,7 @@ fn main() {
     println!("Opened {}; size {} bytes",rom_path,rom.len());
 
     let mut viz = Visualizer::new((512, 512), rom.len());
-    viz.set_data(rom.ptr() as *const GLuint, rom.len());
+    unsafe { viz.set_data(rom.as_slice()); }
     let mut stride = 8;
     viz.set_stride(stride);
     
