@@ -107,7 +107,7 @@ impl Visualizer {
         // Create vertex shader
         let vs = compile_shader(VS_SRC, gl::VERTEX_SHADER);
         // Fragment shader needs size of data at compile time (in uints)
-        let fsstr = String::from(FS_SRC).replace("{}",(data_sz/4).to_string().as_str());
+        let fsstr = String::from(FS_SRC).replace("{}",(data_sz).to_string().as_str());
         let fs = compile_shader(fsstr.as_str(), gl::FRAGMENT_SHADER);
         let program = link_program(vs, fs);
 
@@ -142,9 +142,21 @@ impl Visualizer {
     }
 
     fn set_data(&self, dat : *const GLuint, len : usize) {
-        unsafe { 
-            let texloc = gl::GetUniformLocation(self.program,CString::new("rom").unwrap().as_ptr());
-            gl::Uniform1uiv(texloc,(len/4) as i32,dat);
+        unsafe {
+            // Load image as texture
+            let mut texo = 0;
+            gl::GenTextures(1, &mut texo);
+            gl::BindTexture(gl::TEXTURE_1D, texo);
+
+            gl::TexParameteri(gl::TEXTURE_1D, gl::TEXTURE_BASE_LEVEL, 0);
+            gl::TexParameteri(gl::TEXTURE_1D, gl::TEXTURE_MAX_LEVEL, 0);
+            gl::TexImage1D(gl::TEXTURE_1D, 0, gl::R8UI as i32, len as GLsizei, 0,
+                gl::RED_INTEGER, gl::UNSIGNED_BYTE, dat as *const GLvoid);
+            println!("Texture bound at {}, {}",texo, len);
+            gl::Uniform1i(
+                gl::GetUniformLocation(self.program,CString::new("romtex").unwrap().as_ptr()),
+                0);
+            gl::BindTexture(gl::TEXTURE_1D, 0 );
         }
     }
 
@@ -196,7 +208,9 @@ fn main() {
     while !viz.win.should_close() {
         unsafe { gl::ClearColor(1.0,0.0,0.0,1.0) };
         unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
-        unsafe { gl::DrawArrays(gl::TRIANGLES, 0, 6) };
+        unsafe { 
+            gl::BindTexture(gl::TEXTURE_1D, 1 );
+            gl::DrawArrays(gl::TRIANGLES, 0, 6) };
         viz.win.swap_buffers();
         viz.glfw.poll_events();
         for (_, event) in glfw::flush_messages(&viz.events) {
