@@ -24,8 +24,6 @@ void main() {
 	}	
     uint tex_off_x = tex_off % texw;
     uint tex_off_y = tex_off / texw;
-    vec2 coord = vec2( (float(tex_off_x)+0.5) / float(texw), (float(tex_off_y)+0.5) / float(romh) );
-     uint rv = (texture(romtex, coord).r >> (7u-tex_bit_off)) & 1u;
-    uint rv2 = texelFetch(romtex, ivec2(int(tex_off_x),int(tex_off_y)),0).r;
+    uint rv = (texelFetch(romtex, ivec2(int(tex_off_x),int(tex_off_y)),0).r >> (7u-tex_bit_off)) & 1u;
      out_color = vec4(float(rv),float(rv),float(rv), 1.0);
 }
