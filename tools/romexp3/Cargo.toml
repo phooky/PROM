@@ -1,0 +1,9 @@
+[package]
+name = "romexp3"
+version = "0.1.0"
+authors = ["Adam Mayer <phooky@gmail.com>"]
+
+[dependencies]
+imgui = "0.0.15"
+imgui-glium-renderer = "0.0.15"
+glium = "0.17.0"

@@ -105,6 +105,11 @@ impl Visualizer {
         window.set_key_polling(true);
         window.make_current();
         gl::load_with(|name| window.get_proc_address(name) as *const _);
+        let mut mts : i32 = 0;
+        unsafe {
+        gl::GetIntegerv(gl::MAX_TEXTURE_SIZE, &mut mts as *mut i32 );
+        }
+        println!("Max texture size: {}", mts);
         // Create vertex shader
         let vs = compile_shader(VS_SRC, gl::VERTEX_SHADER);
         // Fragment shader needs size of data at compile time (in uints)
@@ -148,7 +153,7 @@ impl Visualizer {
             let mut texo = 0;
             gl::GenTextures(1, &mut texo);
             gl::BindTexture(gl::TEXTURE_2D, texo);
-            let maxw : usize = 16384;
+            let maxw : usize = 2048;
             let tw : usize = maxw;
             let th : usize = (dat.len() + (maxw-1))/maxw;
             self.data.reserve(tw*th);
