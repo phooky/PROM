@@ -153,11 +153,13 @@ impl Visualizer {
             let mut texo = 0;
             gl::GenTextures(1, &mut texo);
             gl::BindTexture(gl::TEXTURE_2D, texo);
-            let maxw : usize = 2048;
+            let maxw : usize = 16384;
             let tw : usize = maxw;
             let th : usize = (dat.len() + (maxw-1))/maxw;
             self.data.reserve(tw*th);
             self.data.extend(dat.iter().cloned());
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32);
+            gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32);
             gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_BASE_LEVEL, 0);
             gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAX_LEVEL, 0);
             gl::TexImage2D(gl::TEXTURE_2D, 0, gl::R8UI as i32, tw as GLsizei, th as GLsizei, 0,

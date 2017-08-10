@@ -9,7 +9,7 @@ uniform uint romh;
 uniform usampler2D romtex;
 
 void main() {
-    uint texw = 4096u;
+    uint texw = 16384u;
      uint x = uint(gl_FragCoord[0] - 0.5);
      uint y = (wh - 1u) - uint(gl_FragCoord[1] - 0.5);
      uint col = x / stride;
@@ -27,5 +27,5 @@ void main() {
     vec2 coord = vec2( (float(tex_off_x)+0.5) / float(texw), (float(tex_off_y)+0.5) / float(romh) );
      uint rv = (texture(romtex, coord).r >> (7u-tex_bit_off)) & 1u;
     uint rv2 = texelFetch(romtex, ivec2(int(tex_off_x),int(tex_off_y)),0).r;
-     out_color = vec4(float(rv2),float(rv),float(rv), 1.0);
+     out_color = vec4(float(rv),float(rv),float(rv), 1.0);
 }
