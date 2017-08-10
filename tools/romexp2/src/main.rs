@@ -175,6 +175,17 @@ impl Visualizer {
         }
     }
 
+    fn set_selection(&self, start : u32, finish : u32) {
+        unsafe {
+            gl::Uniform1ui(
+                gl::GetUniformLocation(self.program,CString::new("sel0").unwrap().as_ptr()),
+                start);
+            gl::Uniform1ui(
+                gl::GetUniformLocation(self.program,CString::new("sel1").unwrap().as_ptr()),
+                finish);
+        }
+    }
+    
     fn set_size(&self, size : (u32, u32)) {
         unsafe {
             gl::Uniform1ui(
@@ -219,7 +230,7 @@ fn main() {
     unsafe { viz.set_data(rom.as_slice()); }
     let mut stride = 8;
     viz.set_stride(stride);
-    
+    viz.set_selection(800,1600);
     while !viz.win.should_close() {
         unsafe { gl::ClearColor(1.0,0.0,0.0,1.0) };
         unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
