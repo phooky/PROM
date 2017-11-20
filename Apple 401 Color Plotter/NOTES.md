@@ -7,6 +7,7 @@ Pull with:
 
 
 Branch table for commands appears to start around 0x1eec
+14ce is routine that begins with 1eec in hl
 
 Each entry 5B long:
 0-1 command code
