@@ -59,6 +59,8 @@ MAx,y
 
 Raise the pen and move the plotter head to the position specified by the x,y coordinates.
 
+Params: 2
+
 ### ??Move relative (MR)??
 
 ```
@@ -68,6 +70,7 @@ MRx,y
 Raise the pen and move the plotter head to a position offset x,y from its
 current position.
 
+Params: 2
 ### Draw absolute (DA)
 
 ```
@@ -77,6 +80,8 @@ DAx,y(,x,y..)
 Lower the pen and draw a line from the current position to the position
 specified by the x,y coordinates. Continues 
 
+Params: arb.
+
 ==??Draw relative (DR)??==
 
 DRx,y(,x,y)*
@@ -84,11 +89,15 @@ DRx,y(,x,y)*
 lower pen and draw line from current position to an x,y offset. Multiple
 offsets may be specified in a single command.
 
+Params: arb.
+
 ==Circle (CA)==
 
 CAr,x,y
 
 lower pen and draw a circle of radius r centered at x,y.
+
+Params: 3
 
 ==Letter size (LS)==
 
@@ -101,6 +110,7 @@ sets the font size to s
 LRtheta
 
 draw following text rotated by theta
+in degrees, clockwise
 
 ==Print letters (PL)==
 
@@ -115,21 +125,29 @@ PSi
 select pen i (where i is in 1-4)
 
 
-LT - letter ???
-XT - ? xticks ?
-YT - ? yticks ?
-CH - ???
-PM - ???
+LT - Line type -
+   1 solid
+   2 ??
+   3 ??
+   4 ??
+   5 ?? param 
+   6 ??
+   
+XT - ? xticks ? -- 5 params
+YT - ? yticks ? -- 5 params
+CH - ??? -- no params
+PM - Point Marking -- 1 param
 PS - pen select
-PV - ???
-WD - window
-AC - arc
-LI - ???
-IM - ???
-PK - ???
-RS - ???
-VP - ???
-UL - ???
-SP - ???
-LF - ???
-SL - ???
+PV - ??? - 1 param
+WD - window - 4 params
+AC - arc - 5 params
+LI - ??? - no params/arb ???
+IM - ??? - 2 params
+PK - ??? - no params/arb
+RS - ??? - ?0x80 as params?
+VP - Viewport - 4 params
+UL - ??? - no params/arb ? 1 param 0-9?
+SP - ??? - 1 param ??
+LF - ??? - 1 param ? 0-9
+SL - ??? - 1 param  -- Slanted lettering (by %?)
+

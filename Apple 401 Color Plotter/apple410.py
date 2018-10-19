@@ -40,7 +40,11 @@ if __name__ == '__main__':
         scr = sys.argv[1]
     print("Running file {}".format(scr))
     a = Apple410('/dev/ttyUSB0')
-    for line in open(scr).readlines():
+    if scr == "-":
+        f = sys.stdin
+    else:
+        f = open(scr)
+    for line in f.readlines():
         print("SENDING: {}".format(line.strip()))
         a.send(line.strip())
     
