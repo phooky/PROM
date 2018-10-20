@@ -1,0 +1,52 @@
+Ok, first off: we have two ROMs and each is 64K, meaning they completely fill the address space. HUH.
+
+
+let's take a look at R1.
+
+There's a table at BD1E; it's loaded in sB9CD thusly:
+addr = BD1E + A*2
+*FA70 = *addr
+*FA71 = *addr+1
+... so this is loading a 16b value into FA70. What's there?
+in s0900 we load that back into HL, load the value pointed to into
+FA85, and copy a string until A is null, and then the null and two
+more bytes, and THEN store the new HL in FA6E.
+
+So: BD1E is a table of indices into a table of null-terminated strings.
+Let's pull a few values from this table, much of which is null:
+BDFB BD28 ... ? (short table!)
+... this is starting to feel like a stepper lookup?
+BDFB: 1c 26 00 c0 bc   1c 2e 00 c6 bc 
+BD28: 1b 4b 00 c0 bc   1b 48 00 c6 bc
+
+there's a gap in R1 from 0x3ad7 through 0x4000
+
+R1 may (at least start with) null-sep entries
+
+this table spans full 16-bit space; there are gaps in other ROM; probably not it
+table starts in R2 @c000
+0x00
+0x19
+0x32
+0x4b
+0x65
+0x7e
+0x97
+0xb0
+0xc9
+0xe2
+0xfb
+0x0115
+0x012e
+0x0147
+
+let's take a look at:
+309b
+30b4 0x19
+30cd 0x1a
+30e5 0x18
+30fe 0x19
+3117
+312f
+3148
+
